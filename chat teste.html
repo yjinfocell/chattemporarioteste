@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Temporário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: scroll;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #input-container {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            background-color: #eee;
+        }
+
+        #username-input {
+            margin-bottom: 8px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #message-input {
+            flex: 1;
+            margin-bottom: 8px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #send-button {
+            padding: 8px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-messages"></div>
+    <div id="input-container">
+        <input type="text" id="username-input" placeholder="Seu Nome de Usuário">
+        <input type="text" id="message-input" placeholder="Digite sua mensagem" onkeydown="handleKeyPress(event)">
+        <button id="send-button" onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <script>
+        // Função para obter o nome de usuário salvo no armazenamento local
+        function getSavedUsername() {
+            return localStorage.getItem('username') || '';
+        }
+
+        // Função para salvar o nome de usuário no armazenamento local
+        function saveUsername(username) {
+            localStorage.setItem('username', username);
+        }
+
+        // Carregar o nome de usuário salvo, se existir
+        document.getElementById('username-input').value = getSavedUsername();
+
+        function sendMessage() {
+            var usernameInput = document.getElementById('username-input');
+            var messageInput = document.getElementById('message-input');
+
+            var username = usernameInput.value;
+            var message = messageInput.value;
+
+            if (username.trim() !== '' && message.trim() !== '') {
+                var chatMessages = document.getElementById('chat-messages');
+                var newMessage = document.createElement('div');
+                newMessage.textContent = username + ': ' + message;
+                chatMessages.appendChild(newMessage);
+
+                // Salvar o nome de usuário no armazenamento local
+                saveUsername(username);
+
+                // Limpar os campos de entrada após o envio da mensagem
+                messageInput.value = '';
+
+                // Rolar para baixo para mostrar a mensagem mais recente
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+
+        function handleKeyPress(event) {
+            // Verificar se a tecla pressionada é Enter
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>
